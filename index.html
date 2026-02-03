@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You Died v6.1 — Eternal Hell Mirror #666</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blood: #8b0000;
+      --dark-blood: #300000;
+      --fire: #ff0000;
+      --glow: #ff6600;
+      --shadow: #330000;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#000;
+      color:#ff1a1a;
+      font-family:'Share Tech Mono', monospace;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
+      animation:pulse-bg 16s infinite alternate;
+    }
+
+    @keyframes pulse-bg {
+      0% { background:#000; }
+      100% { background:#0c0000; }
+    }
+
+    /* Падаюча кров */
+    .blood {
+      position:absolute;
+      width:3px; height:20px;
+      background:linear-gradient(var(--blood), var(--dark-blood));
+      border-radius:50% 50% 0 0;
+      animation:fall 6s linear infinite;
+      opacity:0.6;
+      z-index:1;
+    }
+
+    @keyframes fall {
+      to { transform:translateY(120vh) rotate(720deg); }
+    }
+
+    /* Плаваючі черепи */
+    .skull {
+      position:absolute;
+      font-size:2.8rem;
+      color:#44000055;
+      pointer-events:none;
+      z-index:1;
+      animation:float 30s linear infinite, pulse-skull 8s infinite alternate;
+    }
+
+    @keyframes float {
+      to { transform:translate(140vw, 140vh) rotate(720deg); }
+    }
+
+    @keyframes pulse-skull {
+      to { opacity:0.4; transform:scale(1.3); }
+    }
+
+    header {
+      text-align:center;
+      padding:60px 0 40px;
+      position:relative;
+      z-index:10;
+    }
+
+    h1 {
+      font-family:'Nosifer', cursive;
+      font-size:clamp(4rem, 12vw, 9rem);
+      color:var(--fire);
+      text-shadow:0 0 30px var(--fire), 0 0 60px #880000, 0 0 120px #440000;
+      letter-spacing:0.15em;
+      animation:glitch 4s infinite, burn 10s infinite alternate;
+    }
+
+    @keyframes glitch {
+      0%,100% { transform:translate(0); }
+      20%  { transform:translate(-3px,3px); }
+      40%  { transform:translate(3px,-3px); }
+      60%  { transform:translate(-2px,2px); }
+    }
+
+    @keyframes burn {
+      to { filter:brightness(1.6) contrast(1.4); }
+    }
+
+    .status { 
+      color:var(--glow); 
+      font-size:1.8rem; 
+      margin:20px 0; 
+      text-shadow:0 0 15px var(--glow); 
+    }
+
+    .counter {
+      font-family:'Creepster', cursive;
+      font-size:2.8rem;
+      color:var(--fire);
+      text-align:center;
+      margin:30px 0;
+      text-shadow:0 0 25px #880000;
+      animation:glow 4s infinite alternate;
+    }
+
+    @keyframes glow {
+      to { text-shadow:0 0 60px var(--fire); }
+    }
+
+    .warning {
+      background:rgba(30,0,0,0.7);
+      border:2px dashed #770000;
+      color:#ff4444;
+      text-align:center;
+      padding:20px;
+      margin:40px 0;
+      font-size:1.4rem;
+      box-shadow:0 0 30px #330000 inset;
+      animation:pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      50% { opacity:0.9; }
+    }
+
+    table {
+      width:100%;
+      max-width:1400px;
+      margin:40px auto;
+      border-collapse:collapse;
+      background:#050000;
+      border:3px solid #550000;
+      box-shadow:0 0 60px #220000;
+    }
+
+    th, td {
+      padding:16px;
+      border:1px solid #330000;
+      text-align:left;
+    }
+
+    th {
+      background:#110000;
+      color:#ff8800;
+      font-size:1.1rem;
+    }
+
+    tr:hover {
+      background:#1a0000;
+    }
+
+    .price {
+      color:#ffcc00;
+      font-weight:bold;
+      text-shadow:0 0 10px #ff8800;
+    }
+
+    .btn {
+      background:#220000;
+      color:#ff1a1a;
+      border:2px solid #770000;
+      padding:10px 24px;
+      cursor:pointer;
+      font-weight:bold;
+      transition:0.25s;
+      box-shadow:0 0 15px #440000;
+    }
+
+    .btn:hover {
+      background:#440000;
+      box-shadow:0 0 30px #ff0000;
+      transform:scale(1.05);
+    }
+
+    footer {
+      text-align:center;
+      color:#440000;
+      margin:120px 0 60px;
+      font-size:1.2rem;
+    }
+
+    .overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.96);
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:40px 20px;
+      overflow-y:auto;
+      color:#ff4444;
+    }
+
+    .hidden { display:none !important; }
+
+    .close-btn {
+      position:fixed;
+      top:30px;
+      right:30px;
+      background:#220000;
+      color:#ff1a1a;
+      border:2px solid #880000;
+      padding:12px 28px;
+      cursor:pointer;
+      font-size:1.5rem;
+      box-shadow:0 0 20px #660000;
+    }
+
+    .close-btn:hover { background:#440000; }
+
+    /* Форми */
+    form.market-form, form.post-form {
+      max-width:1100px;
+      margin:60px auto;
+      padding:30px;
+      background:#0a0000;
+      border:2px solid #550000;
+      box-shadow:0 0 40px #220000;
+    }
+
+    input, textarea {
+      width:100%;
+      margin:12px 0;
+      padding:14px;
+      background:#110000;
+      color:#ff4444;
+      border:1px solid #770000;
+      font-family:inherit;
+    }
+
+    button[type="submit"] {
+      width:100%;
+      padding:16px;
+      margin-top:20px;
+      background:#330000;
+      color:#ff1a1a;
+      border:none;
+      font-size:1.3rem;
+      cursor:pointer;
+    }
+
+    button[type="submit"]:hover {
+      background:#550000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="counter">Жертв зібрано: <span id="soul-count">19,864</span></div>
+
+<div id="closed" class="overlay hidden">
+  <div id="closed-msg">
+    █ YOU DIED — GATES SEALED █<br><br>
+    Maintenance 00:00–01:00 Kyiv time<br>
+    Return at 01:00... if you dare
+  </div>
+  <div id="timer" style="font-size:6rem; margin:60px 0;">--:--:--</div>
+</div>
+
+<div id="rules" class="overlay hidden">
+  <button class="close-btn" onclick="hide('rules')">CLOSE [X]</button>
+  <div style="max-width:1000px; background:rgba(20,0,0,0.8); padding:40px; border:3px dashed #660000;">
+    <h2>LAWS OF THE DAMNED</h2>
+    <p class="warning">Break them and become eternal fuel for the fire.</p>
+    <ul style="list-style:none; padding-left:0;">
+      <li>☠ NO SCAMMING — soul harvested instantly</li>
+      <li>☠ PGP MANDATORY — no key = void ban</li>
+      <li>☠ ESCROW ONLY — bypass = cursed coins</li>
+      <li>☠ NO DOXXING — your bloodline marked</li>
+      <li>☠ NO CP — ninth circle awaits</li>
+      <!-- ... можна додати ще багато пунктів ... -->
+    </ul>
+  </div>
+</div>
+
+<div id="forum" class="overlay hidden">
+  <button class="close-btn" onclick="hide('forum')">CLOSE [X]</button>
+  <div style="max-width:1000px; width:100%;">
+    <h2>FORUM OF THE WRETCHED</h2>
+
+    <form class="post-form" id="postForm">
+      <input type="text" id="postUser" placeholder="Alias (optional)" />
+      <input type="text" id="postTitle" placeholder="Title" required />
+      <textarea id="postContent" rows="7" placeholder="Your cursed words..." required></textarea>
+      <button type="submit">CAST INTO VOID</button>
+    </form>
+
+    <div id="posts"></div>
+  </div>
+</div>
+
+<main id="main">
+  <header>
+    <h1>YOU DIED</h1>
+    <div class="status">v6.1 • Mirror #666 • <span style="animation:blink 0.8s infinite;">HELL ACTIVE</span></div>
+  </header>
+
+  <div class="warning">YOUR SOUL IS ALREADY CLAIMED — NO ESCAPE</div>
+
+  <div class="ascii">
+     ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+    ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀█░█▀▀▀▀  ▀▀▀▀▀█░█▀▀▀▀ 
+    ▐░▌               ▐░▌          ▐░▌     
+    ▐░█▄▄▄▄▄▄▄▄▄      ▐░▌          ▐░▌     
+    ▐░░░░░░░░░░░▌     ▐░▌          ▐░▌     
+    ▀▀▀▀▀▀▀▀▀▀▀       ▀           ▀      
+  </div>
+
+  <!-- Форма продажу -->
+  <form class="market-form" id="sellForm">
+    <h3>SACRIFICE YOUR GOODS TO HELL</h3>
+    <input type="text" name="item" placeholder="Item / Curse" required />
+    <input type="text" name="cat" placeholder="Category" required />
+    <input type="text" name="vendor" placeholder="Your Alias" required />
+    <input type="text" name="price" placeholder="Price (BTC / souls)" required />
+    <input type="text" name="rating" placeholder="Rating" required />
+    <input type="text" name="stock" placeholder="Stock" required />
+    <input type="text" name="details" placeholder="Details / Warnings" required />
+    <button type="submit">OFFER TO THE VOID</button>
+  </form>
+
+  <table class="market" id="market-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Category</th>
+        <th>Vendor</th>
+        <th>Price</th>
+        <th>Rating</th>
+        <th>Stock</th>
+        <th>Details</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="marketBody"></tbody>
+  </table>
+
+  <div style="text-align:center; margin:100px 0;">
+    <button class="btn" onclick="show('rules')">READ THE LAWS</button>
+    <button class="btn" onclick="show('forum')">FORUM OF THE DAMNED</button>
+  </div>
+
+  <footer>
+    ENTERED FOREVER • NO EXIT • NO MERCY • SOULS: ∞
+  </footer>
+</main>
+
+<!-- Звуки -->
+<audio id="scream" preload="auto" src="https://assets.codepen.io/605876/scream-short.mp3"></audio>
+<audio id="laugh" preload="auto" src="https://assets.codepen.io/605876/demon-laugh.mp3"></audio>
+
+<script>
+// =============================================
+// Оптимізовані функції
+// =============================================
+
+const soulCount = document.getElementById('soul-count');
+let souls = 19864;
+setInterval(() => {
+  souls += Math.floor(Math.random() * 7) + 3;
+  soulCount.textContent = souls.toLocaleString();
+}, 2500);
+
+// Закриття о 00:00
+const TZ = 3;
+function isClosed() {
+  const h = (new Date().getUTCHours() + TZ) % 24;
+  return h === 0;
+}
+
+function getCountdown() {
+  const now = new Date();
+  let target = new Date(now);
+  target.setUTCHours(22 - (TZ - 3), 0, 0, 0);
+  if (target < now) target.setUTCDate(target.getUTCDate() + 1);
+  const diff = target - now;
+  const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+  const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+  const s = Math.floor((diff % 3600000) / 1000).toString().padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+function checkTime() {
+  const closed = document.getElementById('closed');
+  const main = document.getElementById('main');
+  const timer = document.getElementById('timer');
+  if (isClosed()) {
+    closed.classList.remove('hidden');
+    main.style.display = 'none';
+    timer.textContent = getCountdown();
+  } else {
+    closed.classList.add('hidden');
+    main.style.display = 'block';
+  }
+}
+setInterval(checkTime, 5000);
+checkTime();
+
+// Показ/приховування оверлеїв
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+// Звуки при кліках
+document.querySelectorAll('.btn, button[type="submit"]').forEach(el => {
+  el.addEventListener('click', () => {
+    const snd = Math.random() > 0.5 ? 'scream' : 'laugh';
+    const audio = document.getElementById(snd);
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  });
+});
+
+// Додавання товару
+document.getElementById('sellForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    item: form.item.value.trim(),
+    cat: form.cat.value.trim(),
+    vendor: form.vendor.value.trim() || 'Anon Demon',
+    price: form.price.value.trim(),
+    rating: form.rating.value.trim(),
+    stock: form.stock.value.trim(),
+    details: form.details.value.trim()
+  };
+
+  if (!data.item || !data.cat || !data.price) return;
+
+  const tbody = document.getElementById('marketBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${data.item}</td>
+    <td>${data.cat}</td>
+    <td class="vendor-name online">${data.vendor} (online)</td>
+    <td class="price">${data.price}</td>
+    <td>${data.rating || 'N/A'}</td>
+    <td>${data.stock || 'Available'}</td>
+    <td>${data.details || 'No details'}</td>
+    <td><button class="btn">BUY / SUMMON</button></td>
+  `;
+  tbody.appendChild(tr);
+  form.reset();
+});
+
+// Початкові товари (розширений список)
+const initialItems = [
+  {item:"Bound Succubus", cat:"Entities", vendor:"Lilith’s Slave Market", price:"1.333 BTC", rating:"4.98", stock:"Available", details:"Soul contract required"},
+  {item:"Plague Vial", cat:"Poisons", vendor:"Pestilence Chem", price:"0.777 BTC", rating:"4.95", stock:"9 left", details:"Airborne"},
+  {item:"Demonic Familiar Imp", cat:"Black Magic", vendor:"Abaddon’s Broker", price:"0.666 BTC", rating:"4.94", stock:"Instant", details:"Speaks tongues"},
+  {item:"Cursed Athame", cat:"Ritual Tools", vendor:"Malphas Forge", price:"0.333 BTC", rating:"4.97", stock:"66", details:"Blood-forged"},
+  {item:"Soul Jar", cat:"Necromancy", vendor:"Lilith’s Vault", price:"0.25 BTC", rating:"4.88", stock:"13 left", details:"Captures essence"},
+  {item:"Premium Proxies", cat:"Proxies", vendor:"GhostProxy Legion", price:"0.085 BTC", rating:"4.92", stock:"∞", details:"Undetectable"},
+  {item:"Fentanyl", cat:"Opioids", vendor:"DarkChemist", price:"---", rating:"4.71", stock:"Vanished", details:"---"},
+  {item:"Bitcoin Tumbler", cat:"Crypto", vendor:"Belial Washer", price:"2.2% + 0.000666 BTC", rating:"4.96", stock:"Online", details:"Infernal mixing"},
+  {item:"RAT Pack", cat:"Malware", vendor:"Asmodeus Code", price:"0.15 BTC", rating:"4.89", stock:"∞", details:"Undetected"},
+  {item:"Forged Passport", cat:"Documents", vendor:"Mephisto Forge", price:"0.45 BTC", rating:"4.82", stock:"Custom", details:"Biometric spoof"},
+  {item:"MDMA Crystals", cat:"Psychedelics", vendor:"Lucifer’s Dust", price:"€90 / 5g", rating:"4.93", stock:"3kg+", details:"NL Lab"},
+  {item:"Lethal Poison", cat:"Assassination", vendor:"Thanatos Chem", price:"0.18 BTC", rating:"4.90", stock:"66 vials", details:"Untraceable"},
+  {item:"Haunted SIM", cat:"Anonymity", vendor:"Banshee Telecom", price:"$66", rating:"4.79", stock:"333", details:"Pre-activated"},
+  {item:"Cocaine", cat:"Stimulants", vendor:"Beelzebub Snow", price:"€90 / g", rating:"4.91", stock:"2.2 kg", details:"99% pure"},
+  {item:"Fullz USA", cat:"Carding", vendor:"Mammon Dumps", price:"$18–35", rating:"4.67", stock:"10k+", details:"Fresh 2026"},
+  {item:"LSD Gel Tabs", cat:"Psychedelics", vendor:"Azazel Visions", price:"$15/tab", rating:"4.95", stock:"500 sheets", details:"300ug"},
+  {item:"Fake DL", cat:"Documents", vendor:"Belphegor ID", price:"0.08 BTC", rating:"4.80", stock:"Custom", details:"Scannable"},
+  {item:"Zero-Day Pack", cat:"Exploits", vendor:"Leviathan 0day", price:"0.40 BTC", rating:"4.93", stock:"Digital", details:"iOS/Android"},
+  {item:"Ketamine", cat:"Dissociatives", vendor:"Dantalion K", price:"€60 / g", rating:"4.86", stock:"1.5 kg", details:"Medical grade"},
+  {item:"Custom Ransomware", cat:"Malware", vendor:"Andras Code", price:"0.22 BTC", rating:"4.91", stock:"Custom", details:"Targeted"},
+  {item:"DMT Vape", cat:"Psychedelics", vendor:"Astaroth Vapors", price:"$120", rating:"4.94", stock:"In stock", details:"Breakthrough"},
+  {item:"ProtonVPN Lifetime", cat:"VPN", vendor:"Samael Net", price:"$45", rating:"4.85", stock:"Unlimited", details:"No logs"},
+  {item:"Heroin #4", cat:"Opiates", vendor:"Moloch Powder", price:"€120 / g", rating:"4.88", stock:"800g", details:"Pure"},
+  {item:"Ghost Gun Kit", cat:"Weapons", vendor:"Cain Arms", price:"0.12 BTC", rating:"4.83", stock:"Digital", details:"3D printable"},
+  // Додаю ще 30+ для "більше"
+  {item:"Voodoo Doll Kit", cat:"Curses", vendor:"Baron Samedi", price:"0.09 BTC", rating:"4.77", stock:"99", details:"Pins included"},
+  {item:"Exorcism Salt", cat:"Protection", vendor:"Gabriel Ward", price:"$33", rating:"4.82", stock:"1kg+", details:"Blessed"},
+  {item:"Necronomicon Scan", cat:"Books", vendor:"Cthulhu Press", price:"0.05 BTC", rating:"4.99", stock:"Digital", details:"Forbidden knowledge"},
+  {item:"Hellfire Candle", cat:"Rituals", vendor:"Lucifer Lights", price:"$13", rating:"4.76", stock:"666", details:"Burns forever"},
+  {item:"Werewolf Serum", cat:"Transformations", vendor:"Lycan Lab", price:"0.44 BTC", rating:"4.84", stock:"Limited", details:"Full moon required"},
+  {item:"Vampire Blood Vial", cat:"Immortality", vendor:"Dracula’s Reserve", price:"0.66 BTC", rating:"4.93", stock:"13", details:"Pure strain"},
+  {item:"Ouija Board Digital", cat:"Summoning", vendor:"Spirit App", price:"0.02 BTC", rating:"4.71", stock:"∞", details:"App download"},
+  {item:"Poltergeist Trap", cat:"Ghost Hunting", vendor:"Ecto Containment", price:"0.33 BTC", rating:"4.88", stock:"33", details:"Industrial strength"},
+  {item:"Dragon Egg", cat:"Mythical", vendor:"Targaryen Hatcher", price:"1 BTC", rating:"4.99", stock:"1", details:"Hatch at own risk"},
+  {item:"Phoenix Feather", cat:"Revival", vendor:"Fawkes Supply", price:"0.55 BTC", rating:"4.92", stock:"5", details:"Resurrection use"},
+  {item:"Unicorn Horn Powder", cat:"Healing", vendor:"Mythical Mills", price:"0.11 BTC", rating:"4.81", stock:"111g", details:"Pure magic"},
+  {item:"Goblin Market Access", cat:"Markets", vendor:"Fae Broker", price:"0.07 BTC", rating:"4.79", stock:"Open", details:"Portal link"},
+  {item:"Elven Bow", cat:"Weapons", vendor:"Legolas Forge", price:"0.88 BTC", rating:"4.96", stock:"8", details:"Never misses"},
+  {item:"Dwarf Axe", cat:"Weapons", vendor:"Gimli Smith", price:"0.77 BTC", rating:"4.85", stock:"7", details:"Cleaves mountains"},
+  {item:"Wizard Staff", cat:"Magic", vendor:"Gandalf’s Wand", price:"0.99 BTC", rating:"4.98", stock:"9", details:"You shall not pass"},
+  {item:"Hobbit Pipeweed", cat:"Herbs", vendor:"Shire Farms", price:"$22 / oz", rating:"4.82", stock:"22oz", details:"Relaxing"},
+  {item:"Orc Sword", cat:"Weapons", vendor:"Mordor Armory", price:"0.44 BTC", rating:"4.73", stock:"44", details:"Bloodthirsty"},
+  {item:"Ent Draught", cat:"Growth", vendor:"Fangorn Forest", price:"0.33 BTC", rating:"4.91", stock:"33", details:"Grow tall"},
+  {item:"Ring of Power", cat:"Artifacts", vendor:"Sauron’s Lost", price:"10 BTC", rating:"5.00", stock:"1", details:"One to rule"},
+  {item:"Palantir Orb", cat:"Scrying", vendor:"Denethor Visions", price:"1.11 BTC", rating:"4.87", stock:"11", details:"See all"},
+  {item:"Mithril Armor", cat:"Protection", vendor:"Dwarven Mines", price:"2.22 BTC", rating:"4.94", stock:"2", details:"Light as feather"},
+  {item:"Balrog Whip", cat:"Weapons", vendor:"Durin’s Bane", price:"0.66 BTC", rating:"4.80", stock:"6", details:"Fiery"},
+  {item:"Elf Cloak", cat:"Anonymity", vendor:"Lothlorien Tailors", price:"0.55 BTC", rating:"4.83", stock:"55", details:"Invisible"},
+  {item:"Arkenstone", cat:"Gems", vendor:"Thrain Treasure", price:"5 BTC", rating:"4.99", stock:"1", details:"Heart of mountain"},
+  {item:"Silmaril", cat:"Gems", vendor:"Feanor Legacy", price:"100 BTC", rating:"5.00", stock:"3", details:"Unsurpassed beauty"},
+  {item:"Narsil Shard", cat:"Artifacts", vendor:"Elendil Heirs", price:"3 BTC", rating:"4.95", stock:"Shards", details:"Reforge to Anduril"},
+  {item:"Sting Sword", cat:"Weapons", vendor:"Bilbo’s Gift", price:"1 BTC", rating:"4.92", stock:"1", details:"Glows near orcs"},
+  {item:"Glamdring", cat:"Weapons", vendor:"Gandalf’s Blade", price:"1.5 BTC", rating:"4.96", stock:"1", details:"Foe-hammer"},
+  {item:"Orcrist", cat:"Weapons", vendor:"Thorin’s Sword", price:"1.2 BTC", rating:"4.90", stock:"1", details:"Goblin-cleaver"},
+  {item:"Anduril", cat:"Weapons", vendor:"Aragorn’s Flame", price:"4 BTC", rating:"5.00", stock:"1", details:"Flame of the West"},
+  {item:"Light of Earendil", cat:"Artifacts", vendor:"Galadriel’s Gift", price:"0.8 BTC", rating:"4.88", stock:"Phial", details:"Star-glass"},
+  {item:"One Ring Replica", cat:"Artifacts", vendor:"Mordor Forge", price:"0.01 BTC", rating:"4.00", stock:"∞", details:"Not the real one"},
+  {item:"Smaug’s Scale", cat:"Armor", vendor:"Lonely Mountain", price:"2 BTC", rating:"4.97", stock:"Scale", details:"Dragon-proof"},
+  {item:"Bilbo’s Mithril Shirt", cat:"Armor", vendor:"Shire Auction", price:"3 BTC", rating:"4.94", stock:"1", details:"Light mail"},
+  {item:"Tom Bombadil’s Hat", cat:"Artifacts", vendor:"Old Forest", price:"0.99 BTC", rating:"4.85", stock:"1", details:"Mysterious"},
+  {item:"Saruman’s Staff", cat:"Magic", vendor:"Orthanc Tower", price:"1.8 BTC", rating:"4.91", stock:"1", details:"Voice of power"},
+  {item:"Radagast’s Rhubarb", cat:"Herbs", vendor:"Brown Wizard", price:"$11", rating:"4.77", stock:"Bunch", details:"Healing"},
+  {item:"Gollum’s Fish", cat:"Food", vendor:"Forbidden Pool", price:"$1", rating:"3.50", stock:"Raw", details:"Raw and wriggling"},
+  {item:"Lembas Bread", cat:"Food", vendor:"Elven Bakers", price:"$22 / loaf", rating:"4.98", stock:"Loaf", details:"Fills for days"},
+  {item:"Miruvor Cordial", cat:"Potions", vendor:"Rivendell Vintners", price:"0.2 BTC", rating:"4.96", stock:"Bottle", details:"Restorative"},
+  {item:"Athelas Leaf", cat:"Herbs", vendor:"Kingsfoil", price:"0.1 BTC", rating:"4.93", stock:"Leaf", details:"Heals wounds"},
+  {item:"Pipe of Gandalf", cat:"Artifacts", vendor:"Wizard’s Pipe", price:"0.3 BTC", rating:"4.88", stock:"1", details:"Longbottom Leaf"},
+  {item:"Horn of Gondor", cat:"Artifacts", vendor:"Boromir’s Call", price:"1.1 BTC", rating:"4.95", stock:"1", details:"Summons aid"},
+  {item:"Phial of Galadriel", cat:"Artifacts", vendor:"Star-glass", price:"0.7 BTC", rating:"4.92", stock:"1", details:"Light in dark"},
+  {item:"Palantir Replica", cat:"Scrying", vendor:"Seeing-stone", price:"1.4 BTC", rating:"4.90", stock:"Replica", details:"Non-cursed"},
+  {item:"Aragorn’s Pipe", cat:"Artifacts", vendor:"Strider’s Smoke", price:"0.4 BTC", rating:"4.84", stock:"1", details:"Ranger style"},
+  {item:"Frodo’s Sting", cat:"Weapons", vendor:"Baggins Blade", price:"2 BTC", rating:"4.97", stock:"1", details:"Glows blue"},
+  {item:"Sam’s Pots", cat:"Tools", vendor:"Gamgee Kitchen", price:"0.05 BTC", rating:"4.80", stock:"Set", details="For cooking rabbits"},
+  {item:"Merry’s Dagger", cat:"Weapons", vendor:"Barrow-blade", price:"0.6 BTC", rating:"4.86", stock:"1", details:"Witch-king bane"},
+  {item:"Pippin’s Brooch", cat:"Artifacts", vendor:"Lothlorien Leaf", price:"0.3 BTC", rating:"4.82", stock:"1", details:"Elven craft"},
+  {item:"Gimli’s Helmet", cat:"Armor", vendor:"Dwarf Helm", price:"0.9 BTC", rating:"4.88", stock:"1", details:"Never cracks"},
+  {item:"Legolas’s Arrows", cat:"Weapons", vendor:"Mirwood Quiver", price:"0.2 BTC", rating:"4.91", stock:"Quiver", details:"Endless"},
+  {item:"Boromir’s Shield", cat:"Armor", vendor:"Gondor Guard", price:"1 BTC", rating:"4.85", stock:"1", details:"Horn blower"},
+  {item:"Theoden’s Sword", cat:"Weapons", vendor:"Herugrim", price:"1.3 BTC", rating:"4.93", stock:"1", details:"Rohirrim king"},
+  {item:"Eowyn’s Armor", cat:"Armor", vendor:"Shieldmaiden", price:"1.2 BTC", rating:"4.94", stock:"1", details:"No man can kill"},
+  {item:"Faramir’s Bow", cat:"Weapons", vendor:"Ithilien Ranger", price:"0.8 BTC", rating:"4.89", stock:"1", details:"Silent shots"},
+  {item:"Denethor’s Palantir", cat:"Scrying", vendor:"Steward’s Stone", price:"2.5 BTC", rating:"4.87", stock:"1", details:"Madness risk"},
+  {item:"Witch-king’s Morgul Blade", cat:"Weapons", vendor:"Angmar Curse", price:"3 BTC", rating:"4.99", stock:"1", details:"Turns to wraith"},
+  {item:"Shelob’s Venom", cat:"Poisons", vendor:"Cirith Ungol", price:"0.5 BTC", rating:"4.84", stock:"Vial", details:"Paralyzes"},
+  {item:"Grond Hammer", cat:"Weapons", vendor:"Mordor Siege", price:"4 BTC", rating:"4.96", stock:"1", details:"Breaks gates"},
+  {item:"Uruk-hai Crossbow", cat:"Weapons", vendor:"Isengard Arsenal", price:"0.7 BTC", rating:"4.90", stock:"1", details:"Long range"},
+  {item:"Ent Draught", cat:"Potions", vendor:"Fangorn Forest", price:"0.3 BTC", rating:"4.91", stock:"Bottle", details:"Grow tall"},
+  {item:"Orc Draught", cat:"Potions", vendor:"Mordor Brew", price:"0.1 BTC", rating:"4.75", stock:"Vial", details:"Heals wounds fast"},
+  {item:"Athelas", cat:"Herbs", vendor:"Kingsfoil", price:"0.15 BTC", rating:"4.93", stock:"Bundle", details:"Heals king-touch"},
+  {item:"Miruvor", cat:"Potions", vendor:"Elven Cordial", price:"0.4 BTC", rating:"4.95", stock:"Flask", details:"Revives strength"},
+  {item:"Lembas", cat:"Food", vendor:"Elven Bread", price:"0.2 BTC", rating:"4.97", stock:"Loaf", details:"Sustains for days"},
+  {item:"Old Toby", cat:"Herbs", vendor:"Southfarthing Pipeweed", price:"0.05 BTC", rating:"4.82", stock:"Pouch", details:"Best smoke"},
+  {item:"Longbottom Leaf", cat:"Herbs", vendor:"Shire Tobacco", price:"0.06 BTC", rating:"4.84", stock:"Pouch", details:"Smooth draw"},
+  {item:"Southlinch", cat:"Herbs", vendor:"Bree Weed", price:"0.04 BTC", rating:"4.78", stock:"Pouch", details:"Strong kick"},
+  {item:"Sweet Galenas", cat:"Herbs", vendor:"Gondor Tobacco", price:"0.07 BTC", rating:"4.86", stock:"Pouch", details:"Aromatic"},
+  {item:"Pipe of Merry", cat:"Artifacts", vendor:"Brandybuck Pipe", price:"0.25 BTC", rating:"4.88", stock:"1", details:"Hobbit size"},
+  {item:"Pipe of Pippin", cat:"Artifacts", vendor:"Took Pipe", price:"0.25 BTC", rating:"4.88", stock:"1", details:"Tookish style"},
+  {item:"Gandalf's Pipe", cat:"Artifacts", vendor:"Wizard Pipe", price:"0.5 BTC", rating:"4.92", stock:"1", details:"Smoke rings"},
+  {item:"Thorin's Pipe", cat:"Artifacts", vendor:"Dwarf Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Oakenshield"},
+  {item:"Aragorn's Pipe", cat:"Artifacts", vendor:"Ranger Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Strider"},
+  {item:"Bilbo's Pipe", cat:"Artifacts", vendor:"Baggins Pipe", price:"0.3 BTC", rating:"4.87", stock:"1", details:"Eleventy-one"},
+  {item:"Frodo's Pipe", cat:"Artifacts", vendor:"Ringbearer Pipe", price:"0.3 BTC", rating:"4.87", stock:"1", details:"Shire memory"},
+  {item:"Sam's Pipe", cat:"Artifacts", vendor:"Gamgee Pipe", price:"0.25 BTC", rating:"4.85", stock:"1", details:"Gardener's"},
+  {item:"Gimli's Pipe", cat:"Artifacts", vendor:"Dwarf Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Son of Gloin"},
+  {item:"Legolas's Pipe", cat:"Artifacts", vendor:"Elf Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Greenleaf"},
+  {item:"Boromir's Pipe", cat:"Artifacts", vendor:"Gondor Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Horn blower"},
+  {item:"Faramir's Pipe", cat:"Artifacts", vendor:"Ithilien Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Ranger"},
+  {item:"Eowyn's Pipe", cat:"Artifacts", vendor:"Rohirrim Pipe", price:"0.3 BTC", rating:"4.87", stock:"1", details:"Shieldmaiden"},
+  {item:"Theoden's Pipe", cat:"Artifacts", vendor:"King Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Edoras"},
+  {item:"Denethor's Pipe", cat:"Artifacts", vendor:"Steward Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Minas Tirith"},
+  {item:"Saruman's Pipe", cat:"Artifacts", vendor:"Wizard Pipe", price:"0.5 BTC", rating:"4.92", stock:"1", details:"Isengard"},
+  {item:"Radagast's Pipe", cat:"Artifacts", vendor:"Brown Wizard Pipe", price:"0.3 BTC", rating:"4.87", stock:"1", details:"Rhosgobel"},
+  {item:"Tom Bombadil's Pipe", cat:"Artifacts", vendor:"Old Forest Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Hey dol merry dol"},
+  {item:"Goldberry's Pipe", cat:"Artifacts", vendor:"River-daughter Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Water lily"},
+  {item:"Treebeard's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.5 BTC", rating:"4.92", stock:"1", details:"Hoom hom"},
+  {item:"Quickbeam's Pipe", cat:"Artifacts", vendor:"Rowan Ent Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Hasty"},
+  {item:"Skinbark's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Fangorn"},
+  {item:"Leaflock's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Finger-like"},
+  {item:"Fladrif's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Eagle-friend"},
+  {item:"Bregalad's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.4 BTC", rating:"4.90", stock:"1", details:"Quickbeam"},
+  {item:"Fangorn's Pipe", cat:"Artifacts", vendor:"Ent Pipe", price:"0.5 BTC", rating:"4.92", stock:"1", details:"Oldest"},
+  {item:"Old Man Willow's Pipe", cat:"Artifacts", vendor:"Huorn Pipe", price:"0.3 BTC", rating:"4.87", stock:"1", details:"Malevolent"},
+  {item:"Huorn Pipe", cat:"Artifacts", vendor:"Fangorn Pipe", price:"0.35 BTC", rating:"4.89", stock:"1", details:"Tree-like"},
+  {item:"Barrow-wight Dagger", cat:"Weapons", vendor:"Downs Curse", price:"0.6 BTC", rating:"4.86", stock:"1", details:"Undead touch"},
+  {item:"Mouth of Sauron Teeth", cat:"Artifacts", vendor:"Black Numenorean", price:"1 BTC", rating:"4.95", stock:"Set", details:"Sharp tongue"},
+  {item:"Warg Pelt", cat:"Armor", vendor:"Isengard Beast", price:"0.5 BTC", rating:"4.91", stock:"Pelt", details:"Wolf-hide"},
+  {item:"Oliphaunt Tusk", cat:"Artifacts", vendor:"Harad Beast", price:"1.5 BTC", rating:"4.94", stock:"Tusk", details:"Mumakil"},
+  {item:"Fellbeast Scale", cat:"Armor", vendor:"Nazgul Mount", price:"2 BTC", rating:"4.97", stock:"Scale", details:"Dragon-like"},
+  {item:"Morgul Rat", cat:"Pets", vendor:"Minas Morgul", price:"0.05 BTC", rating:"4.70", stock:"Rat", details:"Poisonous bite"},
+  {item:"Great Spider Silk", cat:"Materials", vendor:"Ungoliant Descendant", price:"0.8 BTC", rating:"4.93", stock:"Spool", details:"Stronger than steel"},
+  {item:"Watcher Tentacle", cat:"Artifacts", vendor:"Durthang", price:"1 BTC", rating:"4.95", stock:"Tentacle", details:"Multi-eyed"},
+  {item:"Balrog Horn", cat:"Artifacts", vendor:"Moria Depths", price:"3 BTC", rating:"4.99", stock:"Horn", details:"Fiery"},
+  {item:"Durin's Crown", cat:"Artifacts", vendor:"Khazad-dum", price:"5 BTC", rating:"5.00", stock:"1", details:"Dwarf king"},
+  // ... і ще 20, щоб було "більше"
+  {item:"Narya Ring", cat:"Rings", vendor:"Fire Ring", price:"10 BTC", rating:"5.00", stock:"1", details:"Gandalf's"},
+  {item:"Nenya Ring", cat:"Rings", vendor:"Water Ring", price:"10 BTC", rating:"5.00", stock:"1", details:"Galadriel's"},
+  {item:"Vilya Ring", cat:"Rings", vendor:"Air Ring", price:"10 BTC", rating:"5.00", stock:"1", details:"Elrond's"},
+  {item:"Dwarf Ring", cat:"Rings", vendor:"Seven Rings", price:"7 BTC", rating:"4.97", stock:"7", details:"For dwarf lords"},
+  {item:"Men Ring", cat:"Rings", vendor:"Nine Rings", price:"9 BTC", rating:"4.99", stock:"9", details:"For mortal men"},
+  {item:"Elf Ring", cat:"Rings", vendor:"Three Rings", price:"3 BTC", rating:"5.00", stock:"3", details:"For elf kings"},
+  {item:"One Ring", cat:"Rings", vendor:"Master Ring", price:"100 BTC", rating:"5.00", stock:"1", details:"To rule them all"},
+  {item:"Silmarils", cat:"Gems", vendor:"Feanor's Light", price:"1000 BTC", rating:"5.00", stock:"3", details:"Holy jewels"},
+  {item:"Nauglamir", cat:"Artifacts", vendor:"Dwarf Necklace", price:"5 BTC", rating:"4.98", stock:"1", details:"With Silmaril"},
+  {item:"Angainor", cat:"Chains", vendor:"Valar Chain", price:"10 BTC", rating:"5.00", stock:"1", details:"Binds Morgoth"},
+  {item:"Grond", cat:"Weapons", vendor:"Wolf's Head", price:"4 BTC", rating:"4.96", stock:"1", details:"Battering ram"},
+  {item:"Aeglos", cat:"Weapons", vendor:"Gil-galad Spear", price:"1.5 BTC", rating:"4.94", stock:"1", details:"Snow-point"},
+  {item:"Ringil", cat:"Weapons", vendor:"Fingolfin Sword", price:"2 BTC", rating:"4.97", stock:"1", details:"Glittering"},
+  {item:"Gurthang", cat:"Weapons", vendor:"Turin Sword", price:"1.8 BTC", rating:"4.95", stock:"1", details:"Iron of Death"},
+  {item:"Hadhodrond", cat:"Artifacts", vendor:"Khazad-dum", price:"3 BTC", rating:"4.98", stock:"1", details:"Dwarf realm"},
+  {item:"Durin's Axe", cat:"Weapons", vendor:"Heirloom", price:"2.5 BTC", rating:"4.96", stock:"1", details:"Mithril head"},
+  {item:"Barazinbar", cat:"Gems", vendor:"Caradhras", price:"4 BTC", rating:"4.99", stock:"1", details:"Redhorn"},
+  {item:"Celebrimbor's Hammer", cat:"Tools", vendor:"Eregion Smith", price:"2 BTC", rating:"4.97", stock:"1", details:"Ring-forged"},
+  {item:"Feanor's Lamp", cat:"Artifacts", vendor:"Silmaril Light", price:"5 BTC", rating:"5.00", stock:"1", details:"Unquenchable"},
+  {item:"Vingilot Sail", cat:"Artifacts", vendor:"Earendil Ship", price:"6 BTC", rating:"5.00", stock:"1", details:"Star vessel"},
+  {item:"Ulmo's Conch", cat:"Artifacts", vendor:"Valar Horn", price:"3 BTC", rating:"4.98", stock:"1", details:"Sea call"},
+  {item:"Yavanna's Fruit", cat:"Food", vendor:"Valar Gift", price:"1 BTC", rating:"4.95", stock:"Fruit", details:"Life-giving"},
+  {item:"Aule's Hammer", cat:"Tools", vendor:"Valar Smith", price:"4 BTC", rating:"4.99", stock:"1", details:"Creation"},
+  {item:"Manwe's Eagle", cat:"Entities", vendor:"Valar Bird", price:"5 BTC", rating:"5.00", stock:"1", details:"Messenger"},
+  {item:"Varda's Stars", cat:"Artifacts", vendor:"Kindler", price:"10 BTC", rating:"5.00", stock:"Constellation", details:"Light of heaven"},
+  {item:"Orome's Horn", cat:"Artifacts", vendor:"Valar Hunter", price:"2 BTC", rating:"4.97", stock:"1", details:"Calls hounds"},
+  {item:"Nienna's Tears", cat:"Potions", vendor:"Valar Weeper", price:"1.5 BTC", rating:"4.96", stock:"Vial", details:"Healing sorrow"},
+  {item:"Mandos's Doom", cat:"Curses", vendor:"Valar Judge", price:"3 BTC", rating:"4.98", stock:"1", details:"Fate pronouncement"},
+  {item:"Vaire's Tapestry", cat:"Artifacts", vendor:"Valar Weaver", price:"4 BTC", rating:"4.99", stock:"1", details:"Threads of time"},
+  {item:"Este's Sleep", cat:"Potions", vendor:"Valar Healer", price:"1 BTC", rating:"4.95", stock:"Potion", details:"Restorative"},
+  {item:"Tulkas's Fists", cat:"Weapons", vendor:"Valar Wrestler", price:"2.5 BTC", rating:"4.97", stock:"Pair", details:"Unbreakable"},
+  {item:"Nessa's Dance", cat:"Artifacts", vendor:"Valar Dancer", price:"1.5 BTC", rating:"4.96", stock:"Scroll", details:"Swift feet"},
+  {item:"Vana's Flowers", cat:"Herbs", vendor:"Valar Spring", price:"0.5 BTC", rating:"4.93", stock:"Bouquet", details:"Ever-bloom"},
+  {item:"Lórien's Dreams", cat:"Potions", vendor:"Valar Dreamer", price:"2 BTC", rating:"4.97", stock:"Vial", details:"Visions"},
+  {item:"Ossë's Waves", cat:"Artifacts", vendor:"Maia Sea", price:"1.5 BTC", rating:"4.96", stock:"Shell", details:"Storm call"},
+  {item:"Uinen's Calm", cat:"Potions", vendor:"Maia Sea", price:"1 BTC", rating:"4.95", stock:"Bottle", details:"Still waters"},
+  {item:"Ilmarë's Stars", cat:"Artifacts", vendor:"Maia Handmaiden", price:"3 BTC", rating:"4.98", stock:"1", details:"Varda's maid"},
+  {item:"Eönwë's Sword", cat:"Weapons", vendor:"Maia Herald", price:"4 BTC", rating:"4.99", stock:"1", details:"Manwe's banner"},
+  {item:"Arien's Sun", cat:"Artifacts", vendor:"Maia Fire", price:"5 BTC", rating:"5.00", stock:"1", details:"Day bringer"},
+  {item:"Tilion's Moon", cat:"Artifacts", vendor:"Maia Hunter", price:"5 BTC", rating:"5.00", stock:"1", details:"Night light"},
+  {item:"Melian's Girdle", cat:"Artifacts", vendor:"Maia Queen", price:"3 BTC", rating:"4.98", stock:"1", details:"Doriath protection"},
+  {item:"Olórin's Staff", cat:"Weapons", vendor:"Maia Wizard", price:"2 BTC", rating:"4.97", stock:"1", details:"Gandalf's"},
+  {item:"Curumo's Staff", cat:"Weapons", vendor:"Maia Smith", price:"2 BTC", rating:"4.97", stock:"1", details:"Saruman's"},
+  {item:"Aiwendil's Staff", cat:"Weapons", vendor:"Maia Nature", price:"2 BTC", rating:"4.97", stock:"1", details:"Radagast's"},
+  {item:"Pallando's Staff", cat:"Weapons", vendor:"Maia Blue", price:"2 BTC", rating:"4.97", stock:"1", details:"East wanderer"},
+  {item:"Alatar's Staff", cat:"Weapons", vendor:"Maia Blue", price:"2 BTC", rating:"4.97", stock:"1", details:"East wanderer"},
+  // ... і так далі до 100, але для прикладу скорочую
+];
+const marketBody = document.getElementById('marketBody');
+initialItems.forEach(item => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${item.item}</td>
+    <td>${item.cat}</td>
+    <td class="vendor-name online">${item.vendor} (online)</td>
+    <td class="price">${item.price}</td>
+    <td>${item.rating}</td>
+    <td>${item.stock}</td>
+    <td>${item.details}</td>
+    <td><button class="btn">BUY / SUMMON</button></td>
+  `;
+  marketBody.appendChild(tr);
+});
+
+</script>
+
+</body>
+</html>
